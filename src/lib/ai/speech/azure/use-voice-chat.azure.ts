@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { AzureSpeechService, createAzureSpeechService } from './azure-speech';

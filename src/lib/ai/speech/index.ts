@@ -37,7 +37,3 @@ export const DEFAULT_VOICE_TOOLS = [
     },
   },
 ];
-
-// Export Azure Speech implementation as default
-export { useAzureVoiceChat as useVoiceChat } from './azure/use-voice-chat.azure';
-export { AzureSpeechService, createAzureSpeechService } from './azure/azure-speech';

@@ -3,10 +3,7 @@
 import { TextPart, UIMessage } from "ai";
 import { DEFAULT_VOICE_TOOLS, UIMessageWithCompleted } from "lib/ai/speech";
 
-import {
-  OPENAI_VOICE,
-  useOpenAIVoiceChat as OpenAIVoiceChat,
-} from "lib/ai/speech/open-ai/use-voice-chat.openai";
+import { useVoiceChat } from "lib/ai/speech/client";
 import { cn, nextTick } from "lib/utils";
 import {
   CheckIcon,
@@ -129,7 +126,7 @@ export function ChatBotVoice() {
     startListening,
     stop,
     stopListening,
-  } = OpenAIVoiceChat(voiceChat.options.providerOptions);
+  } = useVoiceChat(voiceChat.options.providerOptions);
 
   const startWithSound = useCallback(() => {
     if (!startAudio.current) {
@@ -325,66 +322,11 @@ export function ChatBotVoice() {
                     align="start"
                   >
                     <DropdownMenuGroup className="cursor-pointer">
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger
-                          className="flex items-center gap-2 cursor-pointer"
-                          icon=""
-                        >
-                          <OpenAIIcon className="size-3.5 stroke-none fill-foreground" />
-                          Open AI
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                          <DropdownMenuSubContent>
-                            {Object.entries(OPENAI_VOICE).map(
-                              ([key, value]) => (
-                                <DropdownMenuItem
-                                  className="cursor-pointer flex items-center justify-between"
-                                  onClick={() =>
-                                    appStoreMutate({
-                                      voiceChat: {
-                                        ...voiceChat,
-                                        options: {
-                                          provider: "openai",
-                                          providerOptions: {
-                                            voice: value,
-                                          },
-                                        },
-                                      },
-                                    })
-                                  }
-                                  key={key}
-                                >
-                                  {key}
-
-                                  {value ===
-                                    voiceChat.options.providerOptions
-                                      ?.voice && (
-                                    <CheckIcon className="size-3.5" />
-                                  )}
-                                </DropdownMenuItem>
-                              ),
-                            )}
-                          </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                      </DropdownMenuSub>
-                      <DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger
-                            className="flex items-center gap-2 text-muted-foreground"
-                            icon=""
-                          >
-                            <GeminiIcon className="size-3.5" />
-                            Gemini
-                          </DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent>
-                              <div className="text-xs text-muted-foreground p-6">
-                                Not Implemented Yet
-                              </div>
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                      </DropdownMenuSub>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <div className="size-3.5 bg-blue-500 rounded-sm" />
+                        Azure Speech Services
+                        <CheckIcon className="size-3.5 ml-auto" />
+                      </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
