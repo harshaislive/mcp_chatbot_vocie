@@ -6,7 +6,7 @@ import { ChatModel } from "app-types/chat";
 // Azure OpenAI configuration
 const azureOpenAI = createOpenAI({
   apiKey: process.env.AZURE_OPENAI_KEY,
-  baseURL: `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT}`,
+  baseURL: `${process.env.AZURE_OPENAI_ENDPOINT}/openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT}?api-version=${process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"}`,
 });
 
 const staticModels = {
