@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { useChat } from '@ai-sdk/react';
-import { AzureSpeechService, createAzureSpeechService } from './azure-speech';
-import { VoiceChatSession, UIMessageWithCompleted } from '../index';
-import { customModelProvider } from '../../models';
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useChat } from "@ai-sdk/react";
+import { AzureSpeechService, createAzureSpeechService } from "./azure-speech";
+import { VoiceChatSession, UIMessageWithCompleted } from "../index";
 
 interface UseAzureVoiceChatProps {
   tools?: any[];
@@ -25,23 +24,17 @@ export function useAzureVoiceChat({
   const speechServiceRef = useRef<AzureSpeechService | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Get the Azure OpenAI model
-  const model = customModelProvider.getModel({
-    provider: 'azure',
-    model: process.env.AZURE_OPENAI_DEPLOYMENT || 'o3-mini'
-  });
-
   const {
     messages: chatMessages,
     append,
     setMessages,
     isLoading: isChatLoading,
   } = useChat({
-    api: '/api/chat',
+    api: "/api/chat",
     body: {
       model: {
-        provider: 'azure',
-        model: process.env.AZURE_OPENAI_DEPLOYMENT || 'o3-mini'
+        provider: "azure",
+        model: process.env.AZURE_OPENAI_DEPLOYMENT || "o3-mini",
       },
       tools,
       systemPrompt,
@@ -53,7 +46,7 @@ export function useAzureVoiceChat({
         try {
           await speechServiceRef.current.synthesizeSpeech(message.content);
         } catch (error) {
-          console.error('TTS Error:', error);
+          console.error("TTS Error:", error);
           setError(error as Error);
         } finally {
           setIsAssistantSpeaking(false);
@@ -67,34 +60,35 @@ export function useAzureVoiceChat({
   });
 
   // Convert chat messages to UI messages with completed status
-  const messages: UIMessageWithCompleted[] = chatMessages.map(msg => ({
+  const messages: UIMessageWithCompleted[] = chatMessages.map((msg) => ({
     ...msg,
-    completed: !isChatLoading || msg.role !== 'assistant'
+    completed: !isChatLoading || msg.role !== "assistant",
   }));
 
   const start = useCallback(async () => {
     try {
       setError(null);
-      
+
       // Initialize Azure Speech Service
       speechServiceRef.current = createAzureSpeechService();
       if (!speechServiceRef.current) {
-        throw new Error('Failed to initialize Azure Speech Services');
+        throw new Error("Failed to initialize Azure Speech Services");
       }
 
       setIsActive(true);
-      
+
       // Add initial system message if needed
       if (messages.length === 0) {
-        setMessages([{
-          id: 'system',
-          role: 'system',
-          content: systemPrompt,
-        }]);
+        setMessages([
+          {
+            id: "system",
+            role: "system",
+            content: systemPrompt,
+          },
+        ]);
       }
-
     } catch (error) {
-      console.error('Failed to start voice chat:', error);
+      console.error("Failed to start voice chat:", error);
       setError(error as Error);
     }
   }, [systemPrompt, messages.length, setMessages]);
@@ -121,7 +115,7 @@ export function useAzureVoiceChat({
       setIsLoading(false);
       setError(null);
     } catch (error) {
-      console.error('Error stopping voice chat:', error);
+      console.error("Error stopping voice chat:", error);
       setError(error as Error);
     }
   }, []);
@@ -140,13 +134,13 @@ export function useAzureVoiceChat({
           if (text.trim()) {
             setIsUserSpeaking(false);
             setIsLoading(true);
-            
+
             // Send the recognized text to the chat
             await append({
-              role: 'user',
+              role: "user",
               content: text.trim(),
             });
-            
+
             setIsLoading(false);
           }
         },
@@ -158,14 +152,14 @@ export function useAzureVoiceChat({
         },
         // onError
         (error: string) => {
-          console.error('Speech recognition error:', error);
+          console.error("Speech recognition error:", error);
           setError(new Error(error));
           setIsListening(false);
           setIsUserSpeaking(false);
-        }
+        },
       );
     } catch (error) {
-      console.error('Failed to start listening:', error);
+      console.error("Failed to start listening:", error);
       setError(error as Error);
       setIsListening(false);
     }
@@ -179,7 +173,7 @@ export function useAzureVoiceChat({
       setIsListening(false);
       setIsUserSpeaking(false);
     } catch (error) {
-      console.error('Failed to stop listening:', error);
+      console.error("Failed to stop listening:", error);
       setError(error as Error);
     }
   }, [isListening]);
